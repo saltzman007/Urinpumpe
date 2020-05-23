@@ -545,11 +545,19 @@ void ShowErrorState()
   UrinPumpStufe = 0;
 
   WriteSevenSegment(14);  //E
-  delay(1000);  
-  WriteSevenSegment(ErrorState);
-  delay(1000);  
-
   DoWifiCommunication();
+  delay(200);  
+  DoWifiCommunication();
+  delay(200);  
+  DoWifiCommunication();
+  delay(200);  
+  WriteSevenSegment(ErrorState);
+  DoWifiCommunication();
+  delay(200);  
+  DoWifiCommunication();
+  delay(200);  
+  DoWifiCommunication();
+  delay(200);  
 }
 
 void loop() 
