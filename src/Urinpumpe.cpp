@@ -5,6 +5,7 @@
 #define _SMARTDEBUG
 #include "smartdebug.h"
 #include "Urinpumpe.h"
+#include "Adafruit_MAX31865.h"
 
 WiFiServer server(80);
 
@@ -385,6 +386,38 @@ void CheckPlusAnalogMinus()
   }  
 }
 
+void WriteFault(Adafruit_MAX31865 max)
+{
+  uint8_t fault = max.readFault();
+  if (fault) 
+  {
+    Serial.print("Fault 0x"); Serial.println(fault, HEX);
+    if (fault & MAX31865_FAULT_HIGHTHRESH) {
+      Serial.println("RTD High Threshold"); 
+    }
+    if (fault & MAX31865_FAULT_LOWTHRESH) {
+      Serial.println("RTD Low Threshold"); 
+    }
+    if (fault & MAX31865_FAULT_REFINLOW) {
+      Serial.println("REFIN- > 0.85 x Bias"); 
+    }
+    if (fault & MAX31865_FAULT_REFINHIGH) {
+      Serial.println("REFIN- < 0.85 x Bias - FORCE- open"); 
+    }
+    if (fault & MAX31865_FAULT_RTDINLOW) {
+      Serial.println("RTDIN- < 0.85 x Bias - FORCE- open"); 
+    }
+    if (fault & MAX31865_FAULT_OVUV) {
+      Serial.println("Under/Over voltage"); 
+    }
+    max.clearFault();
+  }
+  else
+  {
+    Serial.println("NO FAULT"); 
+  }
+}
+
 
 void ReadTemp()
 {
@@ -393,18 +426,28 @@ void ReadTemp()
 
   if(BinIchDran(waitTime, &oldTime))
   {
+    // Use software SPI: CS, DI, DO, CLK
+    Adafruit_MAX31865 max = Adafruit_MAX31865(4, 13, 27, 12);
+    max.begin(MAX31865_2WIRE);
 
-    float val = analogRead(TempSensor);
-    //DEBUG_PRINTLN_VALUE("TEMP val ", val);
+    uint16_t rtd =  max.readRTD();
 
-    //0 GC = 922
-    //270 GC = 640
+    const float RREF = 4300.0; //pt100 <-> pt 1000
 
-    val = val * (-0.807) + 744;
-    TempIst = val;
-    DEBUG_PRINTLN_VALUE("TEMP Ist: ",TempIst);
+    Serial.print("RTD value: "); Serial.println(rtd);
+    float ratio = rtd;
+    ratio /= 32768;
+    Serial.print("Ratio = "); Serial.println(ratio,8);
+    Serial.print("Resistance = "); Serial.println(RREF*ratio,8);
+
+    float temp = max.temperature(1000, RREF);    //1000 == Ohm bei 0Grad
+
+    WriteFault(max);
+
+    DEBUG_PRINTLN_VALUE("TEMP Ist: ", temp);
   }
 }
+
 
 boolean IsUrinRunning()
 {
@@ -569,10 +612,10 @@ void loop()
     millisecs = millis();
 
     ReadTemp();
-    UrinSoftwarePWM();
-    SetReadyLED();  
-    GasHahnRegeln();
-    CheckPlusAnalogMinus();
+    //UrinSoftwarePWM();
+    //SetReadyLED();  
+    //GasHahnRegeln();
+    //CheckPlusAnalogMinus();
     DoWifiCommunication();
    }
   else

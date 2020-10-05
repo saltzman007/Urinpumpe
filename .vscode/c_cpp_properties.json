@@ -67,7 +67,6 @@
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/fb_gfx",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/cores/esp32",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/variants/feather_esp32",
-                "/home/pi/.platformio/lib/PubSubClient_ID89/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/AsyncUDP/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/AzureIoT/src",
@@ -94,7 +93,8 @@
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 "/home/pi/.platformio/packages/tool-unity",
-                ""
+                "",
+                "${workspaceFolder}/src"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
@@ -160,7 +160,6 @@
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/fb_gfx",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/cores/esp32",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/variants/feather_esp32",
-                    "/home/pi/.platformio/lib/PubSubClient_ID89/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/AsyncUDP/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/AzureIoT/src",
@@ -191,7 +190,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=40303",
+                "PLATFORMIO=50001",
                 "ARDUINO_FEATHER_ESP32",
                 "ESP32",
                 "ESP_PLATFORM",
