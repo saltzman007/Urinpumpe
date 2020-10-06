@@ -251,20 +251,20 @@ void LedTest()
   digitalWrite(ErrorLED,0);
 }
 
-int GasHahnPositionMin = 50;        // % PWM
-const int GasHahnPositionMax = 85;  //Stellung Gashahn ganz offen % PWM
-int GasHahnPosition = 0;
-const int GasHahnPositionDelta = 2;  //Faustwert: in 20 Stellungen von Min bis Max
+// int GasHahnPositionMin = 50;        // % PWM
+// const int GasHahnPositionMax = 85;  //Stellung Gashahn ganz offen % PWM
+// int GasHahnPosition = 0;
+// const int GasHahnPositionDelta = 2;  //Faustwert: in 20 Stellungen von Min bis Max
 
-bool IsEnoughGasRunning()
-{
-  int Gasmenge = analogRead(GasMengenSensor);
+// bool IsEnoughGasRunning()
+// {
+//   int Gasmenge = analogRead(GasMengenSensor);
 
-  if(Gasmenge < 10)  //Gasmenge bei funktionierendem Sensor ohne Gasfluss = 1V = 190 bei Gas, 0,5 V = 100 bei Luft, der Gasmengenmesser ist unter Wert 100 kaputt
-    ErrorState = 4;
+//   if(Gasmenge < 10)  //Gasmenge bei funktionierendem Sensor ohne Gasfluss = 1V = 190 bei Gas, 0,5 V = 100 bei Luft, der Gasmengenmesser ist unter Wert 100 kaputt
+//     ErrorState = 4;
 
-  return (Gasmenge > GasMengeMin);
-}
+//   return (Gasmenge > GasMengeMin);
+// }
 
 inline boolean IsBurning()
 {
@@ -277,8 +277,8 @@ void Zuenden()
 {
   DEBUG_PRINTLN("Zuenden."); 
 
-  while(!IsEnoughGasRunning())
-  {
+  //while(!IsEnoughGasRunning())
+  //{
     digitalWrite (GasHahn, 1);
 
     for(int i = 0; i < 5; i++)
@@ -287,14 +287,14 @@ void Zuenden()
       UrinSoftwarePWM();
       delay(50);
     }
-  }
-  if(!IsEnoughGasRunning())
-  {
-    ErrorState = 2;
-    return;
-  }
+  //}
+  // if(!IsEnoughGasRunning())
+  // {
+  //   ErrorState = 2;
+  //   return;
+  // }
 
-  DEBUG_PRINTLN("Gasmenge: GENUG");
+  DEBUG_PRINTLN("Gashahn ist offen");
 
   //Zuendzeit = 5sek = 100 * 50 ms
   //int count = 130;
@@ -350,8 +350,8 @@ void GasHahnRegeln()
       }
       else
       {
-        if(UrinPumpStufe > 0)
-            UrinPumpStufe--;
+        // if(UrinPumpStufe > 0)
+        //     UrinPumpStufe--;
       }
     }
     if(TempIst > TempIdealMax)
@@ -372,8 +372,8 @@ void CheckPlusAnalogMinus()
   if(BinIchDran(waitTime, &oldTime))
   {
 
-    boolean plus = analogRead(AnalogPlus) > 1000;
-    boolean minus = analogRead(AnalogMinus) > 1000;
+    boolean plus = digitalRead(AnalogPlus);
+    boolean minus = digitalRead(AnalogMinus);
 
     if(plus & (UrinPumpStufe < 9) & (TempIst >= TempIdealMin))
     {
@@ -444,11 +444,11 @@ void ReadTemp()
     // Serial.print("Ratio = "); Serial.println(ratio,8);
     // Serial.print("Resistance = "); Serial.println(RREF*ratio,8);
 
-    float temp = max.temperature(1000, RREF);    //1000 == Ohm bei 0Grad
+    TempIst = (int)max.temperature(1000, RREF);    //1000 == Ohm bei 0Grad
 
     WriteFault(max);
 
-    DEBUG_PRINTLN_VALUE("TEMP Ist: ", temp);
+    DEBUG_PRINTLN_VALUE("TEMP Ist: ", TempIst);
   }
 }
 
@@ -616,11 +616,11 @@ void loop()
     millisecs = millis();
 
     ReadTemp();
-    //UrinSoftwarePWM();
-    //SetReadyLED();  
-    //GasHahnRegeln();
-    //CheckPlusAnalogMinus();
-    DoWifiCommunication();
+    UrinSoftwarePWM();
+    SetReadyLED();  
+    GasHahnRegeln();
+    CheckPlusAnalogMinus();
+    //DoWifiCommunication();
    }
   else
   {
@@ -633,12 +633,15 @@ void setup()
 {
   DEBUG_INIT(115200); // Initialisierung der seriellen Schnittstelle
   //Thread.Sleep (100);
+  pinMode(AnalogPlus,INPUT);
+  pinMode(AnalogMinus,INPUT);
+  pinMode(PumpenSoftwarePWM,OUTPUT);
   pinMode(ErrorLED,OUTPUT);
   pinMode(NoFartLED,OUTPUT);
   pinMode(NoUrinLED,OUTPUT);
   pinMode(ReadyLED,OUTPUT);
   pinMode(GasHahn,OUTPUT);
-  
+  pinMode(ZuendPin,OUTPUT);
   pinMode(SevenSegData, OUTPUT);
   pinMode(SevenSegClock, OUTPUT);
   pinMode(SevenSegLatch, OUTPUT) ;
@@ -654,19 +657,19 @@ void setup()
   WriteSevenSegment(0);
   LedTest();
 
-  WiFi.mode(WIFI_STA);
-  delay(500);
-  WiFi.begin(NetworkName, NetworkPWD);
-  Serial.println("Connect WIFI, waiting 4 IP from DHCP"); 
-  while(WiFi.status() != WL_CONNECTED)
-  {
-    Serial.print(".");
-    Serial.print(WiFi.status());
-    delay(1500); 
-  }
-  Serial.print("WiFi connected IP address: ");
-  Serial.println(WiFi.localIP());
-  server.begin();
+  // WiFi.mode(WIFI_STA);
+  // delay(500);
+  // WiFi.begin(NetworkName, NetworkPWD);
+  // Serial.println("Connect WIFI, waiting 4 IP from DHCP"); 
+  // while(WiFi.status() != WL_CONNECTED)
+  // {
+  //   Serial.print(".");
+  //   Serial.print(WiFi.status());
+  //   delay(1500); 
+  // }
+  // Serial.print("WiFi connected IP address: ");
+  // Serial.println(WiFi.localIP());
+  // server.begin();
 
   DEBUG_PRINTLN("Setup finished."); 
 }
