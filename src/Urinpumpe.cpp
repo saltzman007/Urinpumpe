@@ -23,9 +23,15 @@ const int ZuendPin = 23;
 const int ErrorLED = 25;  
 const int PumpenSoftwarePWM = 26;
 
+const int TempSpiCS = 4;
+const int TempSpiDI = 13;
+const int TempSpiDO = 27;
+const int TempSpiCLK = 12;
+
+
 //PININ
 const int UrinSensorInteruptPin = 16;
-const int FlammdetektorPin = 13;
+const int FlammdetektorPin = 5;
 const int GasMengenSensor = 32;
 const int TempSensor = 33;
 const int AnalogPlus = 34;    //Pulldown 10K
@@ -48,7 +54,6 @@ int UrinPumpStufe = 0;
 const int GasMengeMin = 600;
 
 int ErrorState =  0;  //1: UrinLow; 2: GasLow; 4: Gasmengensensor im Arsch
-
 
 String* GetHtml()
 {
@@ -414,7 +419,7 @@ void WriteFault(Adafruit_MAX31865 max)
   }
   else
   {
-    Serial.println("NO FAULT"); 
+    //Serial.println("NO FAULT"); 
   }
 }
 
@@ -426,19 +431,18 @@ void ReadTemp()
 
   if(BinIchDran(waitTime, &oldTime))
   {
-    // Use software SPI: CS, DI, DO, CLK
-    Adafruit_MAX31865 max = Adafruit_MAX31865(4, 13, 27, 12);
+    Adafruit_MAX31865 max = Adafruit_MAX31865(TempSpiCS, TempSpiDI, TempSpiDO, TempSpiCLK);
     max.begin(MAX31865_2WIRE);
 
-    uint16_t rtd =  max.readRTD();
+    //uint16_t rtd =  max.readRTD();
 
     const float RREF = 4300.0; //pt100 <-> pt 1000
 
-    Serial.print("RTD value: "); Serial.println(rtd);
-    float ratio = rtd;
-    ratio /= 32768;
-    Serial.print("Ratio = "); Serial.println(ratio,8);
-    Serial.print("Resistance = "); Serial.println(RREF*ratio,8);
+    // Serial.print("RTD value: "); Serial.println(rtd);
+    // float ratio = rtd;
+    // ratio /= 32768;
+    // Serial.print("Ratio = "); Serial.println(ratio,8);
+    // Serial.print("Resistance = "); Serial.println(RREF*ratio,8);
 
     float temp = max.temperature(1000, RREF);    //1000 == Ohm bei 0Grad
 
