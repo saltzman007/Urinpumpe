@@ -10,6 +10,7 @@
                 "/home/pi/Urinpumpe/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
+                "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/config",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_trace",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_update",
@@ -91,7 +92,6 @@
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
                 "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
-                "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 "/home/pi/.platformio/packages/tool-unity",
                 ""
             ],
@@ -102,6 +102,7 @@
                     "/home/pi/Urinpumpe/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
+                    "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/config",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_trace",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_update",
@@ -183,13 +184,12 @@
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
                     "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
-                    "/home/pi/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                     "/home/pi/.platformio/packages/tool-unity",
                     ""
                 ]
             },
             "defines": [
-                "PLATFORMIO=50001",
+                "PLATFORMIO=50003",
                 "ARDUINO_FEATHER_ESP32",
                 "ESP32",
                 "ESP_PLATFORM",
@@ -202,7 +202,7 @@
                 "ARDUINO_BOARD=\"Adafruit ESP32 Feather\"",
                 ""
             ],
-            "intelliSenseMode": "clang-x64",
+            "intelliSenseMode": "gcc-x64",
             "cStandard": "c99",
             "cppStandard": "c++11",
             "compilerPath": "/home/pi/.platformio/packages/toolchain-xtensa32/bin/xtensa-esp32-elf-gcc",

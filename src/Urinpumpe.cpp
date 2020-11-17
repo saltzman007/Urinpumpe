@@ -6,6 +6,14 @@
 #include "smartdebug.h"
 #include "Urinpumpe.h"
 #include "Adafruit_MAX31865.h"
+#include "max6675.h"
+
+int thermoDO = 4;
+int thermoCS = 5;
+int thermoCLK = 6;
+
+MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
+
 
 WiFiServer server(80);
 
@@ -268,8 +276,17 @@ void LedTest()
 
 inline boolean IsBurning()
 {
-  DEBUG_PRINTLN_VALUE("Flammdetektor: ", digitalRead(FlammdetektorPin) == 0);
-  return digitalRead(FlammdetektorPin) == 0;
+  MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
+
+  // For the MAX6675 to update, you must delay AT LEAST 250ms between reads!
+  delay(251);
+  if(thermocouple.readCelsius() > 300)
+    return true;
+
+  return false;
+
+  //DEBUG_PRINTLN_VALUE("Flammdetektor: ", digitalRead(FlammdetektorPin) == 0);
+  //return digitalRead(FlammdetektorPin) == 0;
 }
 
 
@@ -652,7 +669,7 @@ void setup()
   pinMode(FlammdetektorPin, INPUT_PULLUP);
 
   pinMode(UrinSensorInteruptPin, INPUT_PULLUP);
-  attachInterrupt(UrinSensorInteruptPin, InteruptUrinSensor, FALLING); 
+  attachInterrupt(digitalPinToInterrupt(UrinSensorInteruptPin), InteruptUrinSensor, FALLING); 
 
   WriteSevenSegment(0);
   LedTest();
