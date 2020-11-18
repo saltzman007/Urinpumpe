@@ -8,13 +8,6 @@
 #include "Adafruit_MAX31865.h"
 #include "max6675.h"
 
-int thermoDO = 4;
-int thermoCS = 5;
-int thermoCLK = 6;
-
-MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
-
-
 WiFiServer server(80);
 
 //PINOUT
@@ -33,13 +26,17 @@ const int PumpenSoftwarePWM = 26;
 
 const int TempSpiCS = 4;
 const int TempSpiDI = 13;
-const int TempSpiDO = 27;
-const int TempSpiCLK = 12;
+//const int TempSpiDO = 27;
+//const int TempSpiCLK = 12;
+
+int BurningCheckDO = 32;
+int BurningCheckCS = 5;
+int BurningCheckCLK = 33;
 
 
 //PININ
 const int UrinSensorInteruptPin = 16;
-const int FlammdetektorPin = 5;
+//const int FlammdetektorPin = 5;
 const int GasMengenSensor = 32;
 const int TempSensor = 33;
 const int AnalogPlus = 34;    //Pulldown 10K
@@ -276,11 +273,13 @@ void LedTest()
 
 inline boolean IsBurning()
 {
-  MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
+  MAX6675 thermocouple(BurningCheckCLK, BurningCheckCS, BurningCheckDO);
 
   // For the MAX6675 to update, you must delay AT LEAST 250ms between reads!
   delay(251);
-  if(thermocouple.readCelsius() > 300)
+  int temp = (int)thermocouple.readCelsius();
+  DEBUG_PRINTLN_VALUE("Flammdetektor: ", temp);
+  if(temp > 300)
     return true;
 
   return false;
@@ -448,7 +447,7 @@ void ReadTemp()
 
   if(BinIchDran(waitTime, &oldTime))
   {
-    Adafruit_MAX31865 max = Adafruit_MAX31865(TempSpiCS, TempSpiDI, TempSpiDO, TempSpiCLK);
+    Adafruit_MAX31865 max = Adafruit_MAX31865(TempSpiCS, TempSpiDI, BurningCheckDO, BurningCheckCLK);
     max.begin(MAX31865_2WIRE);
 
     //uint16_t rtd =  max.readRTD();
@@ -666,7 +665,7 @@ void setup()
   digitalWrite (SevenSegClock, 0);
   digitalWrite (GasHahn, 0);
 
-  pinMode(FlammdetektorPin, INPUT_PULLUP);
+  //pinMode(FlammdetektorPin, INPUT_PULLUP);
 
   pinMode(UrinSensorInteruptPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(UrinSensorInteruptPin), InteruptUrinSensor, FALLING); 
