@@ -279,7 +279,7 @@ inline boolean IsBurning()
   delay(251);
   int temp = (int)thermocouple.readCelsius();
   DEBUG_PRINTLN_VALUE("Flammdetektor: ", temp);
-  if(temp > 300)
+  if(temp > 30)
     return true;
 
   return false;
@@ -471,8 +471,8 @@ void ReadTemp()
 
 boolean IsUrinRunning()
 {
-  if(millisecs - UrinSensorHeartbeat > 5000)
-    return false;
+  //if(millisecs - UrinSensorHeartbeat > 5000)
+  //  return false;
 
 
   //DEBUG_PRINTLN("URIN RUNNNING");
